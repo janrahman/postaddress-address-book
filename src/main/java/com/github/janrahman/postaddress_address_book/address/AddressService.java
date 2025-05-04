@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
-public class AddressService {
+public class AddressService implements AddressServiceApi {
 
   private final AddressRepositoryApi addressRepositoryApi;
 
@@ -24,6 +24,7 @@ public class AddressService {
     this.addressRepositoryApi = addressRepositoryApi;
   }
 
+  @Override
   public ResponseEntity<Void> delete(Long id) {
     return Optional.ofNullable(id)
         .map(this::removeAddressesAndAssociation)
@@ -32,6 +33,7 @@ public class AddressService {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
+  @Override
   public ResponseEntity<Address> getById(Long id) {
     return Optional.ofNullable(id)
         .map(addressRepositoryApi::findById)
@@ -40,6 +42,7 @@ public class AddressService {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
+  @Override
   public ResponseEntity<Address> update(Long id, UpdateAddress updateAddress) {
     if (Objects.isNull(updateAddress)
         || Stream.of(
@@ -59,27 +62,13 @@ public class AddressService {
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
-  private long removeAddressesAndAssociation(long id) {
-    return addressRepositoryApi.deleteAssociation(id) + addressRepositoryApi.delete(id);
-  }
-
-  private Address toAddress(@NonNull AddressesRecord record) {
-    Address address = new Address();
-
-    address.setId(record.getId());
-    address.setStreet(record.getStreet());
-    address.setStreetNumber(record.getStreetNumber());
-    address.setPostalCode(record.getPostalCode());
-    address.setCity(record.getCity());
-
-    return address;
-  }
-
+  @Override
   public ResponseEntity<List<Address>> getAll() {
     List<Address> addresses = addressRepositoryApi.findAll().map(this::toAddress).toList();
     return ResponseEntity.ok(addresses);
   }
 
+  @Override
   public ResponseEntity<Address> create(NewAddress newAddress) {
     if (Objects.isNull(newAddress)
         || Stream.of(
@@ -101,5 +90,21 @@ public class AddressService {
             .buildAndExpand(stored.getId())
             .toUri();
     return ResponseEntity.created(newAddressUri).body(stored);
+  }
+
+  private long removeAddressesAndAssociation(long id) {
+    return addressRepositoryApi.deleteAssociation(id) + addressRepositoryApi.delete(id);
+  }
+
+  private Address toAddress(@NonNull AddressesRecord record) {
+    Address address = new Address();
+
+    address.setId(record.getId());
+    address.setStreet(record.getStreet());
+    address.setStreetNumber(record.getStreetNumber());
+    address.setPostalCode(record.getPostalCode());
+    address.setCity(record.getCity());
+
+    return address;
   }
 }
