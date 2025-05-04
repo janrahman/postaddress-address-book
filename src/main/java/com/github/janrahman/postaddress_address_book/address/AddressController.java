@@ -1,0 +1,32 @@
+package com.github.janrahman.postaddress_address_book.address;
+
+import com.github.janrahman.postaddress_address_book.openapi.api.AddressesApi;
+import com.github.janrahman.postaddress_address_book.openapi.model.Address;
+import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class AddressController implements AddressesApi {
+
+  private final AddressService addressService;
+
+  public AddressController(AddressService addressService) {
+    this.addressService = addressService;
+  }
+
+  @Override
+  public ResponseEntity<Void> _addressesIdDelete(Long id) {
+    return addressService.delete(id);
+  }
+
+  @Override
+  public ResponseEntity<Address> _addressesIdGet(Long id) {
+    return addressService.getById(id);
+  }
+
+  @Override
+  public ResponseEntity<Address> _addressesIdPut(Long id, UpdateAddress updateAddress) {
+    return addressService.update(id, updateAddress);
+  }
+}
