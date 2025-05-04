@@ -1,0 +1,248 @@
+openapi: 3.1.1
+info:
+  title: Address book API
+  version: 0.0.0
+
+paths:
+  /persons:
+    get:
+      summary: List all persons
+      parameters:
+        - in: query
+          name: street
+          schema:
+            type: string
+        - in: query
+          name: street_number
+          schema:
+            type: string
+        - in: query
+          name: postal_code
+          schema:
+            type: string
+        - in: query
+          name: city
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+      tags:
+        - person
+    post:
+      summary: Create a new person
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddPerson'
+      tags:
+        - person
+  /persons/{id}:
+    get:
+      summary: Get a person by Id
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+      tags:
+        - person
+    put:
+      summary: Update a person
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePersonInfo'
+      tags:
+        - person
+    delete:
+      summary: Delete a person
+      responses:
+        '204':
+          description: Success
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      tags:
+        - person
+  /persons/{id}/addresses:
+    get:
+      summary: Get all person addresses
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAddress'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+      tags:
+        - person
+    post:
+      summary: Add an address to a person
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                addressId:
+                  type: integer
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+      tags:
+        - person
+  /addresses/{id}:
+    get:
+      summary: Get an address by Id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      tags:
+        - address
+    put:
+      summary: Update an address
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAddress'
+      tags:
+        - address
+    delete:
+      summary: Delete an address
+      responses:
+        '204':
+          description: Success
+      parameters:
+        - $ref: "#/components/parameters/primaryKey"
+      tags:
+        - address
+components:
+  parameters:
+    primaryKey:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    PersonInfo:
+      type: object
+      properties:
+        firstname:
+          type: string
+        name:
+          type: string
+        gender:
+          type: string
+          enum: [ 'Male', 'Female', 'Nonbinary' ]
+        birthday:
+          type: string
+          format: date
+    Person:
+      allOf:
+        - $ref: '#/components/schemas/PersonInfo'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+    AddPerson:
+      allOf:
+        - $ref: '#/components/schemas/PersonInfo'
+          required:
+            - firstname
+            - name
+            - gender
+            - birthday
+    UpdatePersonInfo:
+      allOf:
+        - $ref: '#/components/schemas/PersonInfo'
+    AddressData:
+      type: object
+      properties:
+        street:
+          type: string
+        street_number:
+          type: string
+        postal_code:
+          type: string
+          pattern: '^[0-9]{5}$'
+        city:
+          type: string
+    Address:
+      allOf:
+        - $ref: '#/components/schemas/AddressData'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+    NewAddress:
+      allOf:
+        - $ref: '#/components/schemas/AddressData'
+          required:
+            - street
+            - street_number
+            - postal_code
+            - city
+    UpdateAddress:
+      allOf:
+        - $ref: '#/components/schemas/AddressData'
