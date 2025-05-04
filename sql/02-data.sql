@@ -1,36 +1,38 @@
--- Insert 10 persons
-INSERT INTO PERSONS (email, firstname, name, gender, birthday)
-VALUES
-    ('john.doe@example.com', 'John', 'Doe', 'Male', '1980-01-01'),
-    ('jane.smith@example.com', 'Jane', 'Smith', 'Female', '1985-05-15'),
-    ('bob.johnson@example.com', 'Bob', 'Johnson', 'Male', '1990-12-31'),
-    ('alice.williams@example.com', 'Alice', 'Williams', 'Female', '1975-07-01'),
-    ('michael.brown@example.com', 'Michael', 'Brown', 'Male', '1992-03-20'),
-    ('emily.davis@example.com', 'Emily', 'Davis', 'Female', '1988-11-10'),
-    ('david.wilson@example.com', 'David', 'Wilson', 'Male', '1982-06-05'),
-    ('olivia.anderson@example.com', 'Olivia', 'Anderson', 'Female', '1995-09-25'),
-    ('william.thompson@example.com', 'William', 'Thompson', 'Male', '1978-04-12'),
-    ('sophia.martinez@example.com', 'Sophia', 'Martinez', 'Female', '1990-08-18');
+-- Persons
+INSERT INTO PERSONS (firstname, name, gender, birthday)
+VALUES ('Max', 'Mustermann', 'Male', '1985-01-01'),
+       ('Lena', 'Müller', 'Female', '1990-05-15'),
+       ('Tobias', 'Schmidt', 'Male', '1978-11-30'),
+       ('Sophia', 'Schneider', 'Female', '1992-03-20'),
+       ('Lukas', 'Weber', 'Male', '1988-07-12'),
+       ('Emilia', 'Becker', 'Female', '1995-09-05'),
+       ('Jonas', 'Hoffmann', 'Male', '1982-04-28'),
+       ('Leonie', 'Fischer', 'Female', '1993-11-10'),
+       ('Florian', 'Köhler', 'Male', '1987-06-18'),
+       ('Amelie', 'Wagner', 'Female', '1991-02-14');
 
--- Insert 5 addresses
+-- Addresses
 INSERT INTO ADDRESSES (street, street_number, postal_code, city)
-VALUES
-    ('Hauptstraße', '123', '12345', 'Musterstadt'),
-    ('Eichenallee', '456a', '67890', 'Beispielort'),
-    ('Lindenstraße', '789', '54321', 'Anderswo'),
-    ('Kiefernweg', '321b', '09876', 'Irgendwo'),
-    ('Ahornweg', '654', '43210', 'Anderer Ort');
+VALUES ('Hauptstraße', '12', '12345', 'Berlin'),
+       ('Lindenallee', '7a', '54321', 'München'),
+       ('Parkweg', '3', '67890', 'Hamburg'),
+       ('Bergstraße', '21b', '24680', 'Köln'),
+       ('Marktplatz', '5', '13579', 'Dresden');
 
--- Insert relationships between persons and addresses
-INSERT INTO PERSONS_HAVE_ADDRESSES (person_email, address_id)
-VALUES
-    ('john.doe@example.com', 1),
-    ('jane.smith@example.com', 2),
-    ('bob.johnson@example.com', 3),
-    ('alice.williams@example.com', 4),
-    ('michael.brown@example.com', 5),
-    ('john.doe@example.com', 2),
-    ('jane.smith@example.com', 3),
-    ('bob.johnson@example.com', 4),
-    ('alice.williams@example.com', 5),
-    ('michael.brown@example.com', 1);
+-- Persons have Addresses
+INSERT INTO PERSONS_HAVE_ADDRESSES (person_id, address_id)
+VALUES (1, 1),
+       (1, 2),
+       (2, 1),
+       (3, 3),
+       (3, 4),
+       (4, 2),
+       (5, 1),
+       (5, 5),
+       (6, 3),
+       (7, 4),
+       (8, 5),
+       (9, 1),
+       (9, 3),
+       (10, 2),
+       (10, 4);
