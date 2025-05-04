@@ -132,6 +132,36 @@ paths:
                 $ref: '#/components/schemas/Address'
       tags:
         - person
+  /addresses:
+    get:
+      summary: Get all addresses
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+      tags:
+        - address
+    post:
+      summary: Create a new address
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAddress'
+      tags:
+        - address
   /addresses/{id}:
     get:
       summary: Get an address by Id

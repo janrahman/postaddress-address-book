@@ -2,12 +2,15 @@ package com.github.janrahman.postaddress_address_book.address;
 
 import com.github.janrahman.postaddress_address_book.jooq.model.Tables;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
+import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -38,15 +41,7 @@ public class AddressRepository implements AddressRepositoryApi {
   }
 
   @Override
-  public AddressesRecord update(long id, UpdateAddress updateAddress) {
-    if (Objects.isNull(updateAddress)
-        || (Objects.isNull(updateAddress.getCity())
-            && Objects.isNull(updateAddress.getPostalCode())
-            && Objects.isNull(updateAddress.getStreet())
-            && Objects.isNull(updateAddress.getStreetNumber()))) {
-      throw new IllegalArgumentException("No fields to update.");
-    }
-
+  public AddressesRecord update(long id, @NonNull UpdateAddress updateAddress) {
     Map<Field<?>, Object> updates = new HashMap<>();
 
     if (Objects.nonNull(updateAddress.getStreet())) {
@@ -65,7 +60,29 @@ public class AddressRepository implements AddressRepositoryApi {
       updates.put(Tables.ADDRESSES.CITY, updateAddress.getCity());
     }
 
-    return context.update(Tables.ADDRESSES).set(updates).where(Tables.ADDRESSES.ID.eq(id))
+    return context
+        .update(Tables.ADDRESSES)
+        .set(updates)
+        .where(Tables.ADDRESSES.ID.eq(id))
+        .returning()
+        .fetchOne();
+  }
+
+  @Override
+  public Stream<AddressesRecord> findAll() {
+    return context.selectFrom(Tables.ADDRESSES)
+            .offset(0)
+            .limit(100)
+            .fetchStream();
+  }
+
+  @Override
+  public AddressesRecord create(@NonNull NewAddress newAddress) {
+    return context.insertInto(Tables.ADDRESSES)
+            .set(Tables.ADDRESSES.STREET, newAddress.getStreet())
+            .set(Tables.ADDRESSES.STREET_NUMBER, newAddress.getStreetNumber())
+            .set(Tables.ADDRESSES.POSTAL_CODE, newAddress.getPostalCode())
+            .set(Tables.ADDRESSES.CITY, newAddress.getCity())
             .returning()
             .fetchOne();
   }

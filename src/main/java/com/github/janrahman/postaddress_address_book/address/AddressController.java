@@ -2,7 +2,9 @@ package com.github.janrahman.postaddress_address_book.address;
 
 import com.github.janrahman.postaddress_address_book.openapi.api.AddressesApi;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
+import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +15,12 @@ public class AddressController implements AddressesApi {
 
   public AddressController(AddressService addressService) {
     this.addressService = addressService;
+  }
+
+  // TODO: add offset and limit params
+  @Override
+  public ResponseEntity<List<Address>> _addressesGet() {
+    return addressService.getAll();
   }
 
   @Override
@@ -28,5 +36,10 @@ public class AddressController implements AddressesApi {
   @Override
   public ResponseEntity<Address> _addressesIdPut(Long id, UpdateAddress updateAddress) {
     return addressService.update(id, updateAddress);
+  }
+
+  @Override
+  public ResponseEntity<Address> _addressesPost(NewAddress newAddress) {
+    return addressService.create(newAddress);
   }
 }
