@@ -1,10 +1,8 @@
 package com.github.janrahman.postaddress_address_book.address;
 
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
-import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
-import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.lang.NonNull;
 
@@ -20,5 +18,5 @@ public interface AddressRepositoryApi {
 
   Stream<AddressesRecord> findAll();
 
-  AddressesRecord create(@NonNull NewAddress newAddress);
+  AddressesRecord save(@NonNull NewAddress newAddress);
 }

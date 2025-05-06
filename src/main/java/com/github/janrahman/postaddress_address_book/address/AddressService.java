@@ -81,7 +81,7 @@ public class AddressService implements AddressServiceApi {
     }
 
     Address stored =
-        Optional.ofNullable(addressRepositoryApi.create(newAddress))
+        Optional.ofNullable(addressRepositoryApi.save(newAddress))
             .map(this::toAddress)
             .orElseThrow(() -> new IllegalStateException("Cannot create new address."));
     URI newAddressUri =

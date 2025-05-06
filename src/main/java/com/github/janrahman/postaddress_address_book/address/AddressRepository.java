@@ -4,14 +4,16 @@ import com.github.janrahman.postaddress_address_book.jooq.model.Tables;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
 import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class AddressRepository implements AddressRepositoryApi {
@@ -22,11 +24,13 @@ public class AddressRepository implements AddressRepositoryApi {
     this.context = context;
   }
 
+  @Transactional
   @Override
   public long delete(long id) {
     return context.deleteFrom(Tables.ADDRESSES).where(Tables.ADDRESSES.ID.eq(id)).execute();
   }
 
+  @Transactional
   @Override
   public long deleteAssociation(long id) {
     return context
@@ -40,25 +44,17 @@ public class AddressRepository implements AddressRepositoryApi {
     return context.selectFrom(Tables.ADDRESSES).where(Tables.ADDRESSES.ID.eq(id)).fetchOne();
   }
 
+  @Transactional
   @Override
   public AddressesRecord update(long id, @NonNull UpdateAddress updateAddress) {
-    Map<Field<?>, Object> updates = new HashMap<>();
-
-    if (Objects.nonNull(updateAddress.getStreet())) {
-      updates.put(Tables.ADDRESSES.STREET, updateAddress.getStreet());
-    }
-
-    if (Objects.nonNull(updateAddress.getStreetNumber())) {
-      updates.put(Tables.ADDRESSES.STREET_NUMBER, updateAddress.getStreetNumber());
-    }
-
-    if (Objects.nonNull(updateAddress.getPostalCode())) {
-      updates.put(Tables.ADDRESSES.POSTAL_CODE, updateAddress.getPostalCode());
-    }
-
-    if (Objects.nonNull(updateAddress.getCity())) {
-      updates.put(Tables.ADDRESSES.CITY, updateAddress.getCity());
-    }
+    Map<Field<?>, Object> updates =
+        Stream.of(
+                Pair.of(Tables.ADDRESSES.STREET, updateAddress.getStreet()),
+                Pair.of(Tables.ADDRESSES.STREET_NUMBER, updateAddress.getStreetNumber()),
+                Pair.of(Tables.ADDRESSES.POSTAL_CODE, updateAddress.getPostalCode()),
+                Pair.of(Tables.ADDRESSES.CITY, updateAddress.getCity()))
+            .filter(it -> Objects.nonNull(it.getRight()))
+            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
     return context
         .update(Tables.ADDRESSES)
@@ -70,20 +66,19 @@ public class AddressRepository implements AddressRepositoryApi {
 
   @Override
   public Stream<AddressesRecord> findAll() {
-    return context.selectFrom(Tables.ADDRESSES)
-            .offset(0)
-            .limit(100)
-            .fetchStream();
+    return context.selectFrom(Tables.ADDRESSES).offset(0).limit(100).fetchStream();
   }
 
+  @Transactional
   @Override
-  public AddressesRecord create(@NonNull NewAddress newAddress) {
-    return context.insertInto(Tables.ADDRESSES)
-            .set(Tables.ADDRESSES.STREET, newAddress.getStreet())
-            .set(Tables.ADDRESSES.STREET_NUMBER, newAddress.getStreetNumber())
-            .set(Tables.ADDRESSES.POSTAL_CODE, newAddress.getPostalCode())
-            .set(Tables.ADDRESSES.CITY, newAddress.getCity())
-            .returning()
-            .fetchOne();
+  public AddressesRecord save(@NonNull NewAddress newAddress) {
+    return context
+        .insertInto(Tables.ADDRESSES)
+        .set(Tables.ADDRESSES.STREET, newAddress.getStreet())
+        .set(Tables.ADDRESSES.STREET_NUMBER, newAddress.getStreetNumber())
+        .set(Tables.ADDRESSES.POSTAL_CODE, newAddress.getPostalCode())
+        .set(Tables.ADDRESSES.CITY, newAddress.getCity())
+        .returning()
+        .fetchOne();
   }
 }
