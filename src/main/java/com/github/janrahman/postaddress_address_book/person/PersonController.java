@@ -14,10 +14,16 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class PersonController implements PersonsApi {
 
+  private final PersonServiceApi personService;
+
+  public PersonController(PersonServiceApi personService) {
+    this.personService = personService;
+  }
+
   @Override
   public ResponseEntity<List<Person>> _personsGet(
       String street, String streetNumber, String postalCode, String city) {
-    return null;
+    return personService.getAll(street, streetNumber, postalCode, city);
   }
 
   @Override
