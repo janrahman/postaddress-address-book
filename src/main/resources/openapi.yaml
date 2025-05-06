@@ -2,6 +2,9 @@ openapi: 3.1.1
 info:
   title: Address book API
   version: 0.0.0
+servers:
+  - description: local server
+    url: http://localhost:8080/api/v1
 
 paths:
   /persons:
@@ -55,7 +58,7 @@ paths:
     get:
       summary: Get a person by Id
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       responses:
         '200':
           description: Success
@@ -75,7 +78,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Person'
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       requestBody:
         content:
           application/json:
@@ -89,32 +92,29 @@ paths:
         '204':
           description: Success
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       tags:
         - person
   /persons/{id}/addresses:
     get:
       summary: Get all person addresses
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewAddress'
+        - $ref: '#/components/parameters/primaryKey'
       responses:
         '201':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Address'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
       tags:
         - person
     post:
       summary: Add an address to a person
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       requestBody:
         content:
           application/json:
@@ -130,6 +130,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Address'
+      tags:
+        - person
+  /persons/avg-age:
+    get:
+      summary: Get average age of all person in the postal code area
+      parameters:
+        - in: query
+          name: postal_code
+          schema:
+            type: string
+            pattern: '^[0-9]{5}$'
+          required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvgAge'
       tags:
         - person
   /addresses:
@@ -173,7 +192,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Address'
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       tags:
         - address
     put:
@@ -186,7 +205,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Address'
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       requestBody:
         content:
           application/json:
@@ -200,7 +219,7 @@ paths:
         '204':
           description: Success
       parameters:
-        - $ref: "#/components/parameters/primaryKey"
+        - $ref: '#/components/parameters/primaryKey'
       tags:
         - address
 components:
@@ -245,6 +264,12 @@ components:
     UpdatePersonInfo:
       allOf:
         - $ref: '#/components/schemas/PersonInfo'
+    AvgAge:
+      type: object
+      properties:
+        averageAge:
+          type: number
+          format: double
     AddressData:
       type: object
       properties:

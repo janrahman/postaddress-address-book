@@ -1,7 +1,9 @@
 package com.github.janrahman.postaddress_address_book.person;
 
 import com.github.janrahman.postaddress_address_book.jooq.model.Tables;
+import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -47,5 +49,29 @@ public class PersonRepository implements PersonRepositoryApi {
   @Override
   public List<PersonsRecord> findAll() {
     return context.selectFrom(Tables.PERSONS).fetch();
+  }
+
+  @Override
+  public @NonNull List<AddressesRecord> findAddressesByPersonId(Long id) {
+    return context
+        .select(Tables.ADDRESSES)
+        .from(Tables.ADDRESSES)
+        .join(Tables.PERSONS_HAVE_ADDRESSES)
+        .on(Tables.ADDRESSES.ID.eq(Tables.PERSONS_HAVE_ADDRESSES.ADDRESS_ID))
+        .where(Tables.PERSONS_HAVE_ADDRESSES.PERSON_ID.eq(id))
+        .fetch(Records.mapping(it -> it));
+  }
+
+  @Override
+  public @NonNull List<LocalDate> findAllPersonBirthdaysByPostalCode(String postalCode) {
+    return context
+        .select(Tables.PERSONS.BIRTHDAY)
+        .from(Tables.PERSONS)
+        .join(Tables.PERSONS_HAVE_ADDRESSES)
+        .on(Tables.PERSONS.ID.eq(Tables.PERSONS_HAVE_ADDRESSES.PERSON_ID))
+        .join(Tables.ADDRESSES)
+        .on(Tables.ADDRESSES.ID.eq(Tables.PERSONS_HAVE_ADDRESSES.ADDRESS_ID))
+        .where(Tables.ADDRESSES.POSTAL_CODE.eq(postalCode))
+        .fetch(Records.mapping(it -> it));
   }
 }

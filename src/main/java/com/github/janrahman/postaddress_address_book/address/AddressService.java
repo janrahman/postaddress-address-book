@@ -1,6 +1,6 @@
 package com.github.janrahman.postaddress_address_book.address;
 
-import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
+import com.github.janrahman.postaddress_address_book.converter.JooqRecordToDTOMapper;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,8 +19,11 @@ public class AddressService implements AddressServiceApi {
 
   private final AddressRepositoryApi addressRepositoryApi;
 
+  private final JooqRecordToDTOMapper jooqRecordToDTOMapper;
+
   public AddressService(AddressRepositoryApi addressRepositoryApi) {
     this.addressRepositoryApi = addressRepositoryApi;
+    jooqRecordToDTOMapper = new JooqRecordToDTOMapper();
   }
 
   @Override
@@ -37,7 +39,7 @@ public class AddressService implements AddressServiceApi {
   public ResponseEntity<Address> getById(Long id) {
     return Optional.ofNullable(id)
         .map(addressRepositoryApi::findById)
-        .map(this::toAddress)
+        .map(jooqRecordToDTOMapper::toAddress)
         .map(ResponseEntity::ok)
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
@@ -57,14 +59,15 @@ public class AddressService implements AddressServiceApi {
     // TODO: throw ResourceNotFoundException instead
     return Optional.ofNullable(id)
         .map(it -> addressRepositoryApi.update(it, updateAddress))
-        .map(this::toAddress)
+        .map(jooqRecordToDTOMapper::toAddress)
         .map(ResponseEntity::ok)
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @Override
   public ResponseEntity<List<Address>> getAll() {
-    List<Address> addresses = addressRepositoryApi.findAll().map(this::toAddress).toList();
+    List<Address> addresses =
+        addressRepositoryApi.findAll().map(jooqRecordToDTOMapper::toAddress).toList();
     return ResponseEntity.ok(addresses);
   }
 
@@ -82,7 +85,7 @@ public class AddressService implements AddressServiceApi {
 
     Address stored =
         Optional.ofNullable(addressRepositoryApi.save(newAddress))
-            .map(this::toAddress)
+            .map(jooqRecordToDTOMapper::toAddress)
             .orElseThrow(() -> new IllegalStateException("Cannot create new address."));
     URI newAddressUri =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -94,17 +97,5 @@ public class AddressService implements AddressServiceApi {
 
   private long removeAddressesAndAssociation(long id) {
     return addressRepositoryApi.deleteAssociation(id) + addressRepositoryApi.delete(id);
-  }
-
-  private Address toAddress(@NonNull AddressesRecord record) {
-    Address address = new Address();
-
-    address.setId(record.getId());
-    address.setStreet(record.getStreet());
-    address.setStreetNumber(record.getStreetNumber());
-    address.setPostalCode(record.getPostalCode());
-    address.setCity(record.getCity());
-
-    return address;
   }
 }
