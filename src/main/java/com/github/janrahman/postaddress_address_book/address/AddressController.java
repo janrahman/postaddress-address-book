@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AddressController implements AddressesApi {
 
-  private final AddressService addressService;
+  private final AddressServiceApi addressService;
 
-  public AddressController(AddressService addressService) {
+  public AddressController(AddressServiceApi addressService) {
     this.addressService = addressService;
   }
 
