@@ -98,7 +98,11 @@ public class PersonService implements PersonServiceApi {
 
   @Override
   public ResponseEntity<Void> delete(Long id) {
-    return Optional.ofNullable(id)
+    if (!personRepository.exists(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return Optional.of(id)
         .map(this::removePersonAndAssociation)
         .filter(it -> it > 0)
         .map(ignore -> new ResponseEntity<Void>(HttpStatus.NO_CONTENT))
@@ -126,8 +130,12 @@ public class PersonService implements PersonServiceApi {
       throw new IllegalArgumentException("No fields to update.");
     }
 
+    if (!personRepository.exists(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     // TODO: throw ResourceNotFoundException instead
-    return Optional.ofNullable(id)
+    return Optional.of(id)
         .map(it -> personRepository.update(it, updatePersonInfo))
         .map(jooqRecordToDTOMapper::toPerson)
         .map(ResponseEntity::ok)

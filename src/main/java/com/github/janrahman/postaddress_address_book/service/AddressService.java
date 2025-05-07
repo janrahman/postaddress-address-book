@@ -17,18 +17,22 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Service
 public class AddressService implements AddressServiceApi {
 
-  private final AddressRepositoryApi addressRepositoryApi;
+  private final AddressRepositoryApi addressRepository;
 
   private final JooqRecordToDTOMapper jooqRecordToDTOMapper;
 
-  public AddressService(AddressRepositoryApi addressRepositoryApi) {
-    this.addressRepositoryApi = addressRepositoryApi;
+  public AddressService(AddressRepositoryApi addressRepository) {
+    this.addressRepository = addressRepository;
     jooqRecordToDTOMapper = new JooqRecordToDTOMapper();
   }
 
   @Override
   public ResponseEntity<Void> delete(Long id) {
-    return Optional.ofNullable(id)
+    if (!addressRepository.exists(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return Optional.of(id)
         .map(this::removeAddressesAndAssociation)
         .filter(it -> it > 0)
         .map(ignore -> new ResponseEntity<Void>(HttpStatus.NO_CONTENT))
@@ -38,7 +42,7 @@ public class AddressService implements AddressServiceApi {
   @Override
   public ResponseEntity<Address> getById(Long id) {
     return Optional.ofNullable(id)
-        .map(addressRepositoryApi::findById)
+        .map(addressRepository::findById)
         .map(jooqRecordToDTOMapper::toAddress)
         .map(ResponseEntity::ok)
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -56,9 +60,13 @@ public class AddressService implements AddressServiceApi {
       throw new IllegalArgumentException("No fields to update.");
     }
 
+    if (!addressRepository.exists(id)) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     // TODO: throw ResourceNotFoundException instead
-    return Optional.ofNullable(id)
-        .map(it -> addressRepositoryApi.update(it, updateAddress))
+    return Optional.of(id)
+        .map(it -> addressRepository.update(it, updateAddress))
         .map(jooqRecordToDTOMapper::toAddress)
         .map(ResponseEntity::ok)
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -67,7 +75,7 @@ public class AddressService implements AddressServiceApi {
   @Override
   public ResponseEntity<List<Address>> getAll() {
     List<Address> addresses =
-        addressRepositoryApi.findAll().map(jooqRecordToDTOMapper::toAddress).toList();
+        addressRepository.findAll().map(jooqRecordToDTOMapper::toAddress).toList();
     return ResponseEntity.ok(addresses);
   }
 
@@ -84,7 +92,7 @@ public class AddressService implements AddressServiceApi {
     }
 
     Address stored =
-        Optional.ofNullable(addressRepositoryApi.save(newAddress))
+        Optional.ofNullable(addressRepository.save(newAddress))
             .map(jooqRecordToDTOMapper::toAddress)
             .orElseThrow(() -> new IllegalStateException("Cannot create new address."));
     URI newAddressUri =
@@ -96,6 +104,6 @@ public class AddressService implements AddressServiceApi {
   }
 
   private long removeAddressesAndAssociation(long id) {
-    return addressRepositoryApi.deleteAssociation(id) + addressRepositoryApi.delete(id);
+    return addressRepository.deleteAssociation(id) + addressRepository.delete(id);
   }
 }
