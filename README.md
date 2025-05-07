@@ -1,62 +1,52 @@
 # Postaddress - Address Book Demo
 
-One Paragraph of the project description
-
-Initially appeared on
-[gist](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2). But the page cannot open anymore so that is why I have
-moved it here.
+Address Book API with CRUD Operations for postaddrees.
 
 ## Getting Started
 
-These instructions will give you a copy of the project up and running on
-your local machine for development and testing purposes. See deployment
-for notes on deploying the project on a live system.
 
 ### Prerequisites
 
 Requirements for the software and other tools to build, test and push
 
-- [Example 1](https://www.example.com)
-- [Example 2](https://www.example.com)
+- Zulu Java JDK 21
+- docker-compose
+- Optional: JetBrains HTTP client
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development
-environment running
+1. Create .env and .env-local files, e.g.
 
-Say what the step will be
+  ```bash
+  # .env
+  POSTGRES_USER=postgres
+  POSTGRES_PASSWORD=postgres
+  POSTGRES_DB=postaddress
+  POSTGRES_URL=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+  
+  # .env-local with internal docker container dns
+  POSTGRES_USER=postgres
+  POSTGRES_PASSWORD=postgres
+  POSTGRES_DB=postaddress
+  POSTGRES_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+  ```
 
-    Give the example
+1. Export env variables
 
-And repeat
+   ```bash
+   set -o allexport; source .env; set +o allexport
+   ```
 
-    until finished
+1. Run `docker-compose -f compose-dev.yaml` to provide postgres database for jooq code generation
+1. Run `/mvnw clean package jib:buildTar` to create a local docker image without registry
+1. Import Image to docker/podman `podman load --input target/jib-image.tar`
+1. Switch to local compose file.
 
-End with an example of getting some data out of the system or using it
-for a little demo
+  ```sh
+  docker-compose -f compose-dev.yaml down
+  docker-compose -f compose-local.yaml up
+  ```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Sample Tests
-
-Explain what these tests test and why
-
-    Give an example
-
-### Style test
-
-Checks if the best practices and the right coding style has been used.
-
-    Give an example
-
-## Deployment
-
-Add additional notes to deploy this on a live system
-
-## Versioning
-
-We use [Semantic Versioning](http://semver.org/) for versioning. For the versions
-available, see the [tags on this
-repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
+Run the http files with JetBrains IntelliJ.
