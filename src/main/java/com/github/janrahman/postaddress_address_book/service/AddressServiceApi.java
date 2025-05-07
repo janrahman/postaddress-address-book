@@ -1,4 +1,4 @@
-package com.github.janrahman.postaddress_address_book.address;
+package com.github.janrahman.postaddress_address_book.service;
 
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
