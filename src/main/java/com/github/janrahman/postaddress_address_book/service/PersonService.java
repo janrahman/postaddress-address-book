@@ -1,7 +1,7 @@
-package com.github.janrahman.postaddress_address_book.person;
+package com.github.janrahman.postaddress_address_book.service;
 
-import com.github.janrahman.postaddress_address_book.address.AddressRepositoryApi;
-import com.github.janrahman.postaddress_address_book.converter.JooqRecordToDTOMapper;
+import com.github.janrahman.postaddress_address_book.repository.PersonRepositoryApi;
+import com.github.janrahman.postaddress_address_book.repository.AddressRepositoryApi;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;

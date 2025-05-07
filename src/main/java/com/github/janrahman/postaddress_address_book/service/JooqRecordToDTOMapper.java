@@ -1,4 +1,4 @@
-package com.github.janrahman.postaddress_address_book.converter;
+package com.github.janrahman.postaddress_address_book.service;
 
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;

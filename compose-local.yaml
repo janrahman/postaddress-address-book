@@ -1,0 +1,28 @@
+services:
+  demo:
+    image: localhost/postaddress-address-book:latest
+    container_name: address_book
+    env_file:
+      - ./.env-local
+    ports:
+      - '8080:8080'
+    networks:
+      - postaddressspring
+  postgres:
+    image: postgres:17
+    container_name: postaddress_postgres
+    env_file:
+      - ./.env-local
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d:ro,z
+    networks:
+      - postaddressspring
+
+volumes:
+  postgres-data:
+
+networks:
+  postaddressspring:

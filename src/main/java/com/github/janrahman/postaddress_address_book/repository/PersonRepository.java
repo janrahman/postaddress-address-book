@@ -1,4 +1,4 @@
-package com.github.janrahman.postaddress_address_book.person;
+package com.github.janrahman.postaddress_address_book.repository;
 
 import com.github.janrahman.postaddress_address_book.jooq.model.Tables;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;

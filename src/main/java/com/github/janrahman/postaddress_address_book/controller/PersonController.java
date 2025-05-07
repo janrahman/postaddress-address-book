@@ -1,5 +1,6 @@
-package com.github.janrahman.postaddress_address_book.person;
+package com.github.janrahman.postaddress_address_book.controller;
 
+import com.github.janrahman.postaddress_address_book.service.PersonServiceApi;
 import com.github.janrahman.postaddress_address_book.openapi.api.PersonsApi;
 import com.github.janrahman.postaddress_address_book.openapi.model.AddPerson;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;

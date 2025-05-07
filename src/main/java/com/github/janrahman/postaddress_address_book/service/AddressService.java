@@ -1,9 +1,9 @@
-package com.github.janrahman.postaddress_address_book.address;
+package com.github.janrahman.postaddress_address_book.service;
 
-import com.github.janrahman.postaddress_address_book.converter.JooqRecordToDTOMapper;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
+import com.github.janrahman.postaddress_address_book.repository.AddressRepositoryApi;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
