@@ -17,4 +17,6 @@ public interface PersonServiceApi {
   ResponseEntity<Address> saveAddress(Long id, PersonsIdAddressesPostRequest personAddress);
 
   ResponseEntity<AvgAge> getAverageAgeByPostalCode(String postalCode);
+
+  ResponseEntity<Void> delete(Long id);
 }

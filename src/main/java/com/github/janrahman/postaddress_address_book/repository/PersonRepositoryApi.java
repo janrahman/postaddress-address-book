@@ -22,5 +22,9 @@ public interface PersonRepositoryApi {
 
   boolean exists(long id);
 
-  int saveAssociation(long id, long addressId);
+  long saveAssociation(long id, long addressId);
+
+  long deleteAssociation(long id);
+
+  long delete(long id);
 }

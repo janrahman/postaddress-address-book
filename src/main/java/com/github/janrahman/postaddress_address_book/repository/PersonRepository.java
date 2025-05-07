@@ -13,6 +13,7 @@ import org.jooq.DSLContext;
 import org.jooq.Records;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class PersonRepository implements PersonRepositoryApi {
@@ -81,11 +82,26 @@ public class PersonRepository implements PersonRepositoryApi {
   }
 
   @Override
-  public int saveAssociation(long personId, long addressId) {
+  public long saveAssociation(long personId, long addressId) {
     return context
         .insertInto(Tables.PERSONS_HAVE_ADDRESSES)
         .set(Tables.PERSONS_HAVE_ADDRESSES.PERSON_ID, personId)
         .set(Tables.PERSONS_HAVE_ADDRESSES.ADDRESS_ID, addressId)
         .execute();
+  }
+
+  @Transactional
+  @Override
+  public long deleteAssociation(long id) {
+    return context
+        .deleteFrom(Tables.PERSONS_HAVE_ADDRESSES)
+        .where(Tables.PERSONS_HAVE_ADDRESSES.PERSON_ID.eq(id))
+        .execute();
+  }
+
+  @Transactional
+  @Override
+  public long delete(long id) {
+    return context.deleteFrom(Tables.PERSONS).where(Tables.PERSONS.ID.eq(id)).execute();
   }
 }

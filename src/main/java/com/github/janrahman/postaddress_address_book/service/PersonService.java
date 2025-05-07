@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -66,9 +67,7 @@ public class PersonService implements PersonServiceApi {
       throw new IllegalArgumentException("Person with Id and address not found.");
     }
 
-      int result = personRepository.saveAssociation(id, addressId);
-
-    if (result > 0) {
+    if (personRepository.saveAssociation(id, addressId) > 0) {
       Address address = jooqRecordToDTOMapper.toAddress(addressRepository.findById(addressId));
       return ResponseEntity.ok(address);
     }
@@ -91,6 +90,19 @@ public class PersonService implements PersonServiceApi {
     result.setAverageAge(averageAge);
 
     return ResponseEntity.ok(result);
+  }
+
+  @Override
+  public ResponseEntity<Void> delete(Long id) {
+    return Optional.ofNullable(id)
+        .map(this::removePersonAndAssociation)
+        .filter(it -> it > 0)
+        .map(ignore -> new ResponseEntity<Void>(HttpStatus.NO_CONTENT))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  private long removePersonAndAssociation(long id) {
+    return personRepository.deleteAssociation(id) + personRepository.delete(id);
   }
 
   private List<PersonsRecord> getPersonsRecords(

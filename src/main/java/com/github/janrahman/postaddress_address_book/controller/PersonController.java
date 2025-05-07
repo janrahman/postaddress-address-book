@@ -45,7 +45,7 @@ public class PersonController implements PersonsApi {
 
   @Override
   public ResponseEntity<Void> _personsIdDelete(Long id) {
-    return null;
+    return personService.delete(id);
   }
 
   @Override
