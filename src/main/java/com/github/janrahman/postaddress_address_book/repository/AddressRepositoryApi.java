@@ -21,4 +21,6 @@ public interface AddressRepositoryApi {
   AddressesRecord save(@NonNull NewAddress newAddress);
 
   boolean exists(long addressId);
+
+  boolean existsByAddressData(String city, String postalCode, String street, String streetNumber);
 }

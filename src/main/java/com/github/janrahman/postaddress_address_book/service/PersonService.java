@@ -154,6 +154,14 @@ public class PersonService implements PersonServiceApi {
       throw new IllegalArgumentException("All information are required.");
     }
 
+    if (personRepository.existsByPersonInfo(
+        addPerson.getFirstname(),
+        addPerson.getName(),
+        addPerson.getBirthday(),
+        Objects.requireNonNull(addPerson.getGender()).getValue())) {
+      throw new IllegalArgumentException("Person already exists.");
+    }
+
     Person stored =
         Optional.ofNullable(personRepository.save(addPerson))
             .map(jooqRecordToDTOMapper::toPerson)

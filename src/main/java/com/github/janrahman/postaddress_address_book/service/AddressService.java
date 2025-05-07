@@ -91,6 +91,14 @@ public class AddressService implements AddressServiceApi {
       throw new IllegalArgumentException("All information are required.");
     }
 
+    if (addressRepository.existsByAddressData(
+        newAddress.getCity(),
+        newAddress.getPostalCode(),
+        newAddress.getStreet(),
+        newAddress.getStreetNumber())) {
+      throw new IllegalArgumentException("Address already exists.");
+    }
+
     Address stored =
         Optional.ofNullable(addressRepository.save(newAddress))
             .map(jooqRecordToDTOMapper::toAddress)

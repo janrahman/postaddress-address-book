@@ -35,4 +35,6 @@ public interface PersonRepositoryApi {
   PersonsRecord update(long id, UpdatePersonInfo updatePersonInfo);
 
   PersonsRecord save(AddPerson addPerson);
+
+  boolean existsByPersonInfo(String firstname, String name, LocalDate birthday, String value);
 }

@@ -86,4 +86,17 @@ public class AddressRepository implements AddressRepositoryApi {
   public boolean exists(long addressId) {
     return context.fetchExists(Tables.ADDRESSES, Tables.ADDRESSES.ID.eq(addressId));
   }
+
+  @Override
+  public boolean existsByAddressData(
+      String city, String postalCode, String street, String streetNumber) {
+    return context.fetchExists(
+        Tables.ADDRESSES,
+        Tables.ADDRESSES
+            .STREET
+            .eq(street)
+            .and(Tables.ADDRESSES.STREET_NUMBER.eq(streetNumber))
+            .and(Tables.ADDRESSES.POSTAL_CODE.eq(postalCode))
+            .and(Tables.ADDRESSES.CITY.eq(city)));
+  }
 }

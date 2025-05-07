@@ -147,4 +147,17 @@ public class PersonRepository implements PersonRepositoryApi {
         .returning()
         .fetchOne();
   }
+
+  @Override
+  public boolean existsByPersonInfo(
+      String firstname, String name, LocalDate birthday, String value) {
+    return context.fetchExists(
+        Tables.PERSONS,
+        Tables.PERSONS
+            .FIRSTNAME
+            .eq(firstname)
+            .and(Tables.PERSONS.NAME.eq(name))
+            .and(Tables.PERSONS.BIRTHDAY.eq(birthday))
+            .and(Tables.PERSONS.GENDER.eq(value)));
+  }
 }
