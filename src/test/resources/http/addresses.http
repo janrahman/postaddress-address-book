@@ -1,0 +1,30 @@
+### Get all addresses
+GET http://localhost:8080/addresses
+
+### Create a new address
+POST http://localhost:8080/addresses
+Content-Type: application/json
+
+{
+  "street": "Musterstraße",
+  "street_number": "42",
+  "postal_code": "12345",
+  "city": "Berlin"
+}
+
+### Get address by ID
+GET http://localhost:8080/addresses/6
+
+### Update address
+PUT http://localhost:8080/addresses/6
+Content-Type: application/json
+
+{
+  "street": "Musterstraße",
+  "street_number": "42a",
+  "postal_code": "12345",
+  "city": "Berlin"
+}
+
+### Delete address
+DELETE http://localhost:8080/addresses/6

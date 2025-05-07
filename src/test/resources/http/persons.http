@@ -1,0 +1,50 @@
+### Get all persons
+GET http://localhost:8080/persons
+
+### Get persons by address filters
+GET http://localhost:8080/persons?street=Hauptstraße&postal_code=12345&city=Berlin
+
+### Create a new person
+POST http://localhost:8080/persons
+Content-Type: application/json
+
+{
+  "firstname": "John",
+  "name": "Doe",
+  "gender": "Male",
+  "birthday": "1990-01-01"
+}
+
+### Get person by ID
+GET http://localhost:8080/persons/1
+
+### Update person
+PUT http://localhost:8080/persons/11
+Content-Type: application/json
+
+{
+  "firstname": "John",
+  "name": "Doe",
+  "gender": "Female",
+  "birthday": "1990-01-01"
+}
+
+### Get person addresses
+GET http://localhost:8080/persons/11/addresses
+
+### Add address to person
+POST http://localhost:8080/persons/11/addresses
+Content-Type: application/json
+
+{
+  "addressId": 1
+}
+
+### Get average age by postal code
+GET http://localhost:8080/persons/avg-age?postal_code=12345
+
+### Delete person
+DELETE http://localhost:8080/persons/11
+
+### Get person by ID
+GET http://localhost:8080/persons/1
