@@ -74,7 +74,4 @@ erDiagram
     ADDRESS ||--o{ PERSON_ADDRESS: has
 ```
 
-## Building Block Level 1
-
-## Crosscutting concepts
 
