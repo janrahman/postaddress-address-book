@@ -74,4 +74,18 @@ public class PersonRepository implements PersonRepositoryApi {
         .where(Tables.ADDRESSES.POSTAL_CODE.eq(postalCode))
         .fetch(Records.mapping(it -> it));
   }
+
+  @Override
+  public boolean exists(long id) {
+    return context.fetchExists(Tables.PERSONS, Tables.PERSONS.ID.eq(id));
+  }
+
+  @Override
+  public int saveAssociation(long personId, long addressId) {
+    return context
+        .insertInto(Tables.PERSONS_HAVE_ADDRESSES)
+        .set(Tables.PERSONS_HAVE_ADDRESSES.PERSON_ID, personId)
+        .set(Tables.PERSONS_HAVE_ADDRESSES.ADDRESS_ID, addressId)
+        .execute();
+  }
 }

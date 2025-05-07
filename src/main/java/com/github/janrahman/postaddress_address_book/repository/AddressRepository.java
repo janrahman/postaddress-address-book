@@ -81,4 +81,9 @@ public class AddressRepository implements AddressRepositoryApi {
         .returning()
         .fetchOne();
   }
+
+  @Override
+  public boolean exists(long addressId) {
+    return context.fetchExists(Tables.ADDRESSES, Tables.ADDRESSES.ID.eq(addressId));
+  }
 }

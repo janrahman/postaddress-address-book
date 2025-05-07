@@ -1,6 +1,5 @@
 package com.github.janrahman.postaddress_address_book.controller;
 
-import com.github.janrahman.postaddress_address_book.service.PersonServiceApi;
 import com.github.janrahman.postaddress_address_book.openapi.api.PersonsApi;
 import com.github.janrahman.postaddress_address_book.openapi.model.AddPerson;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
@@ -8,6 +7,7 @@ import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;
 import com.github.janrahman.postaddress_address_book.openapi.model.Person;
 import com.github.janrahman.postaddress_address_book.openapi.model.PersonsIdAddressesPostRequest;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdatePersonInfo;
+import com.github.janrahman.postaddress_address_book.service.PersonServiceApi;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,11 +37,10 @@ public class PersonController implements PersonsApi {
     return personService.getAddresses(id);
   }
 
-
   @Override
   public ResponseEntity<Address> _personsIdAddressesPost(
-      Long id, PersonsIdAddressesPostRequest personsIdAddressesPostRequest) {
-    return personService.saveAddress(id, personsIdAddressesPostRequest);
+      Long id, PersonsIdAddressesPostRequest personAddressId) {
+    return personService.saveAddress(id, personAddressId);
   }
 
   @Override

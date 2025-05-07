@@ -4,7 +4,7 @@ info:
   version: 0.0.0
 servers:
   - description: local server
-    url: http://localhost:8080/api/v1
+    url: /api/v1
 
 paths:
   /persons:
@@ -123,6 +123,7 @@ paths:
               properties:
                 addressId:
                   type: integer
+                  format: int64
       responses:
         '201':
           description: Successful response

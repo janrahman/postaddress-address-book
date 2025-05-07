@@ -1,12 +1,12 @@
 package com.github.janrahman.postaddress_address_book.service;
 
-import com.github.janrahman.postaddress_address_book.repository.PersonRepositoryApi;
-import com.github.janrahman.postaddress_address_book.repository.AddressRepositoryApi;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;
 import com.github.janrahman.postaddress_address_book.openapi.model.Person;
 import com.github.janrahman.postaddress_address_book.openapi.model.PersonsIdAddressesPostRequest;
+import com.github.janrahman.postaddress_address_book.repository.AddressRepositoryApi;
+import com.github.janrahman.postaddress_address_book.repository.PersonRepositoryApi;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -53,15 +53,27 @@ public class PersonService implements PersonServiceApi {
 
   @Override
   public ResponseEntity<Address> saveAddress(Long id, PersonsIdAddressesPostRequest personAddress) {
-    if (Stream.of(id, personAddress, personAddress.getAddressId()).anyMatch(Objects::isNull)) {
+    if (Objects.isNull(id)) {
       throw new IllegalArgumentException("All fields must not be null.");
     }
-    return null;
-    //
-    //    personRepository.findById(id);
-    //    addressRepository.findById(id);
-    //    personRepository.saveAssociation(id, personAddress)
-    //    return
+
+    Long addressId =
+        Optional.ofNullable(personAddress)
+            .map(PersonsIdAddressesPostRequest::getAddressId)
+            .orElseThrow(() -> new IllegalArgumentException("Person addressId must not be null."));
+
+    if (!(personRepository.exists(id) && addressRepository.exists(addressId))) {
+      throw new IllegalArgumentException("Person with Id and address not found.");
+    }
+
+      int result = personRepository.saveAssociation(id, addressId);
+
+    if (result > 0) {
+      Address address = jooqRecordToDTOMapper.toAddress(addressRepository.findById(addressId));
+      return ResponseEntity.ok(address);
+    }
+
+    return ResponseEntity.notFound().build();
   }
 
   @Override

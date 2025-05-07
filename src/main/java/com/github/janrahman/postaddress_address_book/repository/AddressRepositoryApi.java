@@ -19,4 +19,6 @@ public interface AddressRepositoryApi {
   Stream<AddressesRecord> findAll();
 
   AddressesRecord save(@NonNull NewAddress newAddress);
+
+  boolean exists(long addressId);
 }

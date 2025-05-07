@@ -19,4 +19,8 @@ public interface PersonRepositoryApi {
 
   @NonNull
   List<LocalDate> findAllPersonBirthdaysByPostalCode(String postalCode);
+
+  boolean exists(long id);
+
+  int saveAssociation(long id, long addressId);
 }
