@@ -17,19 +17,19 @@ Requirements for the software and other tools to build, test and push
 
 1. Create .env and .env-local files, e.g.
 
-  ```bash
-  # .env
-  POSTGRES_USER=postgres
-  POSTGRES_PASSWORD=postgres
-  POSTGRES_DB=postaddress
-  POSTGRES_URL=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-  
-  # .env-local with internal docker container dns
-  POSTGRES_USER=postgres
-  POSTGRES_PASSWORD=postgres
-  POSTGRES_DB=postaddress
-  POSTGRES_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-  ```
+   ```bash
+   # .env
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=postgres
+   POSTGRES_DB=postaddress
+   POSTGRES_URL=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+   
+   # .env-local with internal docker container dns
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=postgres
+   POSTGRES_DB=postaddress
+   POSTGRES_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+   ```
 
 1. Export env variables
 
@@ -42,10 +42,10 @@ Requirements for the software and other tools to build, test and push
 1. Import Image to docker/podman `podman load --input target/jib-image.tar`
 1. Switch to local compose file.
 
-  ```sh
-  docker-compose -f compose-dev.yaml down
-  docker-compose -f compose-local.yaml up
-  ```
+   ```sh
+   docker-compose -f compose-dev.yaml down
+   docker-compose -f compose-local.yaml up
+   ```
 
 ## Running the tests
 
