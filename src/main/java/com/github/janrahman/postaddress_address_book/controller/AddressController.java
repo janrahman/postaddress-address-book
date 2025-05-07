@@ -1,10 +1,10 @@
 package com.github.janrahman.postaddress_address_book.controller;
 
-import com.github.janrahman.postaddress_address_book.service.AddressServiceApi;
 import com.github.janrahman.postaddress_address_book.openapi.api.AddressesApi;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.NewAddress;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdateAddress;
+import com.github.janrahman.postaddress_address_book.service.AddressServiceApi;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +41,6 @@ public class AddressController implements AddressesApi {
 
   @Override
   public ResponseEntity<Address> _addressesPost(NewAddress newAddress) {
-    return addressService.create(newAddress);
+    return addressService.save(newAddress);
   }
 }

@@ -16,5 +16,5 @@ public interface AddressServiceApi {
 
   ResponseEntity<List<Address>> getAll();
 
-  ResponseEntity<Address> create(NewAddress newAddress);
+  ResponseEntity<Address> save(NewAddress newAddress);
 }

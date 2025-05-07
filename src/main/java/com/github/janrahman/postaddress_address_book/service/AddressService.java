@@ -72,7 +72,7 @@ public class AddressService implements AddressServiceApi {
   }
 
   @Override
-  public ResponseEntity<Address> create(NewAddress newAddress) {
+  public ResponseEntity<Address> save(NewAddress newAddress) {
     if (Objects.isNull(newAddress)
         || Stream.of(
                 newAddress.getCity(),
