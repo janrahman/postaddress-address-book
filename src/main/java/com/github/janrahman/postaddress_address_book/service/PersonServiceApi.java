@@ -4,6 +4,7 @@ import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;
 import com.github.janrahman.postaddress_address_book.openapi.model.Person;
 import com.github.janrahman.postaddress_address_book.openapi.model.PersonsIdAddressesPostRequest;
+import com.github.janrahman.postaddress_address_book.openapi.model.UpdatePersonInfo;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
@@ -19,4 +20,8 @@ public interface PersonServiceApi {
   ResponseEntity<AvgAge> getAverageAgeByPostalCode(String postalCode);
 
   ResponseEntity<Void> delete(Long id);
+
+  ResponseEntity<Person> getById(Long id);
+
+  ResponseEntity<Person> update(Long id, UpdatePersonInfo updatePersonInfo);
 }

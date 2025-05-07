@@ -3,13 +3,17 @@ package com.github.janrahman.postaddress_address_book.repository;
 import com.github.janrahman.postaddress_address_book.jooq.model.Tables;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;
+import com.github.janrahman.postaddress_address_book.openapi.model.UpdatePersonInfo;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Records;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
@@ -103,5 +107,29 @@ public class PersonRepository implements PersonRepositoryApi {
   @Override
   public long delete(long id) {
     return context.deleteFrom(Tables.PERSONS).where(Tables.PERSONS.ID.eq(id)).execute();
+  }
+
+  @Override
+  public PersonsRecord findById(long id) {
+    return context.selectFrom(Tables.PERSONS).where(Tables.PERSONS.ID.eq(id)).fetchOne();
+  }
+
+  @Override
+  public PersonsRecord update(long id, UpdatePersonInfo updatePersonInfo) {
+    Map<Field<?>, Object> updates =
+        Stream.of(
+                Pair.of(Tables.PERSONS.FIRSTNAME, updatePersonInfo.getFirstname()),
+                Pair.of(Tables.PERSONS.NAME, updatePersonInfo.getName()),
+                Pair.of(Tables.PERSONS.BIRTHDAY, updatePersonInfo.getBirthday()),
+                Pair.of(Tables.PERSONS.GENDER, updatePersonInfo.getGender()))
+            .filter(it -> Objects.nonNull(it.getRight()))
+            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+
+    return context
+        .update(Tables.PERSONS)
+        .set(updates)
+        .where(Tables.PERSONS.ID.eq(id))
+        .returning()
+        .fetchOne();
   }
 }

@@ -50,12 +50,12 @@ public class PersonController implements PersonsApi {
 
   @Override
   public ResponseEntity<Person> _personsIdGet(Long id) {
-    return null;
+    return personService.getById(id);
   }
 
   @Override
   public ResponseEntity<Person> _personsIdPut(Long id, UpdatePersonInfo updatePersonInfo) {
-    return null;
+    return personService.update(id, updatePersonInfo);
   }
 
   @Override

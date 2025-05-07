@@ -5,6 +5,7 @@ import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;
 import com.github.janrahman.postaddress_address_book.openapi.model.Person;
 import com.github.janrahman.postaddress_address_book.openapi.model.PersonsIdAddressesPostRequest;
+import com.github.janrahman.postaddress_address_book.openapi.model.UpdatePersonInfo;
 import com.github.janrahman.postaddress_address_book.repository.AddressRepositoryApi;
 import com.github.janrahman.postaddress_address_book.repository.PersonRepositoryApi;
 import java.time.LocalDate;
@@ -98,6 +99,35 @@ public class PersonService implements PersonServiceApi {
         .map(this::removePersonAndAssociation)
         .filter(it -> it > 0)
         .map(ignore -> new ResponseEntity<Void>(HttpStatus.NO_CONTENT))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @Override
+  public ResponseEntity<Person> getById(Long id) {
+    return Optional.ofNullable(id)
+        .map(personRepository::findById)
+        .map(jooqRecordToDTOMapper::toPerson)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @Override
+  public ResponseEntity<Person> update(Long id, UpdatePersonInfo updatePersonInfo) {
+    if (Objects.isNull(updatePersonInfo)
+        || Stream.of(
+                updatePersonInfo.getFirstname(),
+                updatePersonInfo.getName(),
+                updatePersonInfo.getBirthday(),
+                updatePersonInfo.getGender())
+            .allMatch(Objects::isNull)) {
+      throw new IllegalArgumentException("No fields to update.");
+    }
+
+    // TODO: throw ResourceNotFoundException instead
+    return Optional.ofNullable(id)
+        .map(it -> personRepository.update(it, updatePersonInfo))
+        .map(jooqRecordToDTOMapper::toPerson)
+        .map(ResponseEntity::ok)
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
