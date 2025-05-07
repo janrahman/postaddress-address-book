@@ -133,6 +133,7 @@
 								<interfaceOnly>true</interfaceOnly>
 								<skipDefaultInterface>true</skipDefaultInterface>
 								<useBeanValidation>true</useBeanValidation>
+								<useSpringBuiltInValidation>true</useSpringBuiltInValidation>
 							</configOptions>
 						</configuration>
 					</execution>
