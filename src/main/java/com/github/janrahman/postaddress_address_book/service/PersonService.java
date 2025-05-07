@@ -1,6 +1,7 @@
 package com.github.janrahman.postaddress_address_book.service;
 
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;
+import com.github.janrahman.postaddress_address_book.openapi.model.AddPerson;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;
 import com.github.janrahman.postaddress_address_book.openapi.model.Person;
@@ -8,6 +9,7 @@ import com.github.janrahman.postaddress_address_book.openapi.model.PersonsIdAddr
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdatePersonInfo;
 import com.github.janrahman.postaddress_address_book.repository.AddressRepositoryApi;
 import com.github.janrahman.postaddress_address_book.repository.PersonRepositoryApi;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.stream.Stream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class PersonService implements PersonServiceApi {
@@ -129,6 +132,30 @@ public class PersonService implements PersonServiceApi {
         .map(jooqRecordToDTOMapper::toPerson)
         .map(ResponseEntity::ok)
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @Override
+  public ResponseEntity<Person> save(AddPerson addPerson) {
+    if (Objects.isNull(addPerson)
+        || Stream.of(
+                addPerson.getFirstname(),
+                addPerson.getName(),
+                addPerson.getBirthday(),
+                addPerson.getGender())
+            .anyMatch(Objects::isNull)) {
+      throw new IllegalArgumentException("All information are required.");
+    }
+
+    Person stored =
+        Optional.ofNullable(personRepository.save(addPerson))
+            .map(jooqRecordToDTOMapper::toPerson)
+            .orElseThrow(() -> new IllegalStateException("Cannot create new person."));
+    URI newPersonUri =
+        ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(stored.getId())
+            .toUri();
+    return ResponseEntity.created(newPersonUri).body(stored);
   }
 
   private long removePersonAndAssociation(long id) {

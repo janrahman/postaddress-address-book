@@ -3,6 +3,7 @@ package com.github.janrahman.postaddress_address_book.repository;
 import com.github.janrahman.postaddress_address_book.jooq.model.Tables;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.AddressesRecord;
 import com.github.janrahman.postaddress_address_book.jooq.model.tables.records.PersonsRecord;
+import com.github.janrahman.postaddress_address_book.openapi.model.AddPerson;
 import com.github.janrahman.postaddress_address_book.openapi.model.UpdatePersonInfo;
 import java.time.LocalDate;
 import java.util.List;
@@ -121,7 +122,9 @@ public class PersonRepository implements PersonRepositoryApi {
                 Pair.of(Tables.PERSONS.FIRSTNAME, updatePersonInfo.getFirstname()),
                 Pair.of(Tables.PERSONS.NAME, updatePersonInfo.getName()),
                 Pair.of(Tables.PERSONS.BIRTHDAY, updatePersonInfo.getBirthday()),
-                Pair.of(Tables.PERSONS.GENDER, updatePersonInfo.getGender()))
+                Pair.of(
+                    Tables.PERSONS.GENDER,
+                    Objects.requireNonNull(updatePersonInfo.getGender()).getValue()))
             .filter(it -> Objects.nonNull(it.getRight()))
             .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
 
@@ -129,6 +132,18 @@ public class PersonRepository implements PersonRepositoryApi {
         .update(Tables.PERSONS)
         .set(updates)
         .where(Tables.PERSONS.ID.eq(id))
+        .returning()
+        .fetchOne();
+  }
+
+  @Override
+  public PersonsRecord save(AddPerson addPerson) {
+    return context
+        .insertInto(Tables.PERSONS)
+        .set(Tables.PERSONS.FIRSTNAME, addPerson.getFirstname())
+        .set(Tables.PERSONS.NAME, addPerson.getName())
+        .set(Tables.PERSONS.BIRTHDAY, addPerson.getBirthday())
+        .set(Tables.PERSONS.GENDER, Objects.requireNonNull(addPerson.getGender()).getValue())
         .returning()
         .fetchOne();
   }

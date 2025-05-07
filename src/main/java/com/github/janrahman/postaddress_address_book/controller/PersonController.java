@@ -60,6 +60,6 @@ public class PersonController implements PersonsApi {
 
   @Override
   public ResponseEntity<Person> _personsPost(AddPerson addPerson) {
-    return null;
+    return personService.save(addPerson);
   }
 }

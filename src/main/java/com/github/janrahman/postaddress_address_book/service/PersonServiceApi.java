@@ -1,5 +1,6 @@
 package com.github.janrahman.postaddress_address_book.service;
 
+import com.github.janrahman.postaddress_address_book.openapi.model.AddPerson;
 import com.github.janrahman.postaddress_address_book.openapi.model.Address;
 import com.github.janrahman.postaddress_address_book.openapi.model.AvgAge;
 import com.github.janrahman.postaddress_address_book.openapi.model.Person;
@@ -24,4 +25,6 @@ public interface PersonServiceApi {
   ResponseEntity<Person> getById(Long id);
 
   ResponseEntity<Person> update(Long id, UpdatePersonInfo updatePersonInfo);
+
+  ResponseEntity<Person> save(AddPerson addPerson);
 }
